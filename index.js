@@ -9,6 +9,15 @@ const flash = require('express-flash')
 const app = express()
 const conn = require('./db/conn')
 
+// Models
+const tought = require('./models/Tought')
+const user = require('./models/User')
+
+//import routes
+const toughtsRoutes = require('./routes/toughtsRoutes')
+
+//import controller
+const ToughtController = require('./controllers/ToughtController')
 
 //template engine
 app.engine('handlebars', exphbs.engine())
@@ -60,8 +69,12 @@ app.use((req,res, next) => { //configuração de sessão e respostas
     next()
 })
 
+app.use('/toughts', toughtsRoutes)
+app.get('/', ToughtController.showToughts)
 
-conn.sync()
+conn
+.sync()
+//.sync({force: true})
 .then(() => {
     app.listen(4000, () => {
         console.log('Servidor rodando na porta 4000')
